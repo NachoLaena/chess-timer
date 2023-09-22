@@ -1,21 +1,19 @@
-import { TurnProvider } from "./components/turn-provider";
-import { TurnApp } from "./components/turn-app";
+import { TimerProvider } from "./components/timer-provider";
+import { TimerApp } from "./components/timer-app";
 import { PLAYERS } from "./constants";
-import { StartBtn } from "./components/start-btn";
+import { CommandBar } from "./components/command-bar";
 
 function App() {
+
   return (
       <main>
-        <div className="container">
-          <h1>CHESS-TIMER</h1>
           <div className="timer">
-            <TurnProvider>
-              <TurnApp player={PLAYERS.PLAYER1} />
-              <StartBtn/>
-              <TurnApp player={PLAYERS.PLAYER2}/>
-            </TurnProvider>
+            <TimerProvider>
+              <TimerApp player={PLAYERS.PLAYER1}/>
+              <CommandBar/>
+              <TimerApp player={PLAYERS.PLAYER2} />
+            </TimerProvider>
           </div>
-        </div>
       </main>
   );
 }

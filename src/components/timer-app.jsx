@@ -1,12 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import "./player-timer.css";
-import { TurnContext } from "../context/turn-context";
+import "./timer.css";
+import { TimerContext } from "../context/timer-context";
 import { PLAYERS } from "../constants";
 
-export const TurnApp = ({ player }) => {
-  const { toggleIsFinished, isPlaying, turn, toggleTurn } = useContext(TurnContext);
-  const [mins, setMins] = useState(5);
+export const TimerApp = ({ player }) => {
+  const { increment, toggleIsFinished, isPlaying, turn, toggleTurn } =
+    useContext(TimerContext);
   const [secs, setSecs] = useState(0);
+  const [mins, setMins] = useState(5);
   const interval = useRef();
 
   const handleBoardClick = () => {
@@ -14,10 +15,10 @@ export const TurnApp = ({ player }) => {
   };
 
   useEffect(() => {
-  if (isPlaying && turn === player) {
+    if (isPlaying && turn === player) {
       interval.current = setInterval(() => {
         setSecs((prevSecs) => prevSecs - 1);
-      }, 1000 );
+      }, 1000);
     } else {
       clearInterval(interval.current);
     }
@@ -25,24 +26,25 @@ export const TurnApp = ({ player }) => {
 
   useEffect(() => {
     if (isPlaying && turn !== player) {
-      if (secs + 3 > 59) {
-        setSecs((prev) => prev - 60 + 3);
+      if (secs + increment.current > 59) {
+        console.log(increment.current)
+        setSecs((prev) => prev - 60 + increment.current);
         setMins((prev) => prev + 1);
       } else {
-        setSecs((prev) => prev + 3);
+        console.log(increment.current)
+        setSecs((prev) => prev + increment.current);
       }
     }
-  }, [turn])
+  }, [turn]);
 
   useEffect(() => {
     if (isPlaying && turn === player) {
+      if (mins === 0 && secs === 0) {
+        clearInterval(interval.current);
+        toggleIsFinished();
+        return;
+      }
       if (secs < 0) {
-        if (mins === 0) {
-          clearInterval(interval.current);
-          toggleIsFinished();
-          console.log("se termino");
-          return;
-        }
         setSecs(59);
         setMins((prev) => prev - 1);
       }
@@ -51,10 +53,12 @@ export const TurnApp = ({ player }) => {
 
   return (
     <div
-      className={`timer-key ${turn === player ? "active" : "disabled"}`}
+      className={`timer-key ${player === PLAYERS.PLAYER1 ? "player1" : ""} ${
+        turn === player ? "active" : "disabled"
+      }`}
       onClick={handleBoardClick}
     >
-      <span className={player === PLAYERS.PLAYER1 ? PLAYERS.PLAYER1 : ""}>
+      <span>
         {mins} : {secs <= 9 ? "0" + secs : secs}
       </span>
     </div>
