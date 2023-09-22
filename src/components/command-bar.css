@@ -24,6 +24,11 @@
   color: var(--white);
 }
 
+.dark-btn:active {
+  background-color: var(--white);
+  color: var(--licorice);
+}
+
 .light-btn {
   background-color: var(--white);
   color: var(--licorice);

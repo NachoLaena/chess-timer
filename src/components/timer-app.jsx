@@ -4,10 +4,19 @@ import { TimerContext } from "../context/timer-context";
 import { PLAYERS } from "../constants";
 
 export const TimerApp = ({ player }) => {
-  const { increment, toggleIsFinished, isPlaying, turn, toggleTurn } =
-    useContext(TimerContext);
+  const {
+    isPressedReset,
+    isPressedSett,
+    newMins,
+    increment,
+    toggleIsPlaying,
+    isPlaying,
+    turn,
+    toggleTurn,
+  } = useContext(TimerContext);
   const [secs, setSecs] = useState(0);
-  const [mins, setMins] = useState(5);
+  const [mins, setMins] = useState(newMins);
+  const [isLastSecs, setIsLastSecs] = useState(false);
   const interval = useRef();
 
   const handleBoardClick = () => {
@@ -27,11 +36,9 @@ export const TimerApp = ({ player }) => {
   useEffect(() => {
     if (isPlaying && turn !== player) {
       if (secs + increment.current > 59) {
-        console.log(increment.current)
         setSecs((prev) => prev - 60 + increment.current);
         setMins((prev) => prev + 1);
       } else {
-        console.log(increment.current)
         setSecs((prev) => prev + increment.current);
       }
     }
@@ -41,21 +48,37 @@ export const TimerApp = ({ player }) => {
     if (isPlaying && turn === player) {
       if (mins === 0 && secs === 0) {
         clearInterval(interval.current);
-        toggleIsFinished();
+        toggleIsPlaying();
         return;
       }
       if (secs < 0) {
         setSecs(59);
         setMins((prev) => prev - 1);
       }
+      if (mins === 0 && secs === 15) {
+        setIsLastSecs(true);
+      } else {
+        setIsLastSecs(false);
+      }
     }
   }, [secs, isPlaying]);
+
+  useEffect(() => {
+    setMins(newMins);
+    setSecs(0);
+  }, [newMins, isPressedReset]);
+
+  useEffect(() => {
+    if (isPressedSett) {
+      clearInterval(interval.current);
+    }
+  }, [isPressedSett]);
 
   return (
     <div
       className={`timer-key ${player === PLAYERS.PLAYER1 ? "player1" : ""} ${
         turn === player ? "active" : "disabled"
-      }`}
+      } ${isLastSecs ? "last-secs" : ""}`}
       onClick={handleBoardClick}
     >
       <span>

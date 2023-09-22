@@ -5,21 +5,28 @@ import { TimerContext } from "../context/timer-context";
 export const TimerProvider = ({ children }) => {
   const [turn, setTurn] = useState(PLAYERS.PLAYER1);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
   const [isPressedSett, setIsPressedSett] = useState(false);
+  const [isPressedReset, setIsPressedReset] = useState(false);
+  const [newMins, setNewMins] = useState(5);
   const increment = useRef(3);
+
+  const Reset = () => {
+    toggleIsPressedReset();
+    setIsPlaying(false);
+    setTurn(PLAYERS.PLAYER1);
+  };
 
   const toggleIsPlaying = () => {
     setIsPlaying((prev) => !prev);
   };
 
-  const toggleIsFinished = () => {
-    setIsFinished((prev) => !prev);
-  };
-
   const toggleIsPressedSett = () => {
     setIsPressedSett((prev) => !prev);
-  }
+  };
+
+  const toggleIsPressedReset = () => {
+    setIsPressedReset((prev) => !prev);
+  };
 
   const toggleTurn = () => {
     setTurn((prev) =>
@@ -30,11 +37,14 @@ export const TimerProvider = ({ children }) => {
   return (
     <TimerContext.Provider
       value={{
+        Reset,
+        isPressedReset,
+        toggleIsPressedReset,
+        newMins,
+        setNewMins,
         isPressedSett,
         toggleIsPressedSett,
         increment,
-        isFinished,
-        toggleIsFinished,
         isPlaying,
         toggleIsPlaying,
         turn,

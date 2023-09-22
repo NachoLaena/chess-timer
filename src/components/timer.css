@@ -38,3 +38,18 @@ span {
 .disabled {
   pointer-events: none;
 }
+
+.last-secs {
+  animation: blink 1s;
+  -webkit-animation: blink 1s;
+}
+
+@keyframes blink {
+  0% {
+    background-color: var(--white);
+  }
+  50% {
+    color: var(--white);
+    background-color: #a32222;
+  }
+}
